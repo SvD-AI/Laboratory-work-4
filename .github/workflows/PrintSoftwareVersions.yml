@@ -4,7 +4,7 @@ name: 'Виведення версій ПЗ'
 # Тригери запуску
 on:
   push:
-    branches: [ "main" ] 
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   workflow_dispatch: # Дозволяє запускати вручну
@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest # Використовуємо ОС Ubuntu
 
     steps:
-      # Крок 1: Отримуємо код 
+      # Крок 1: Отримуємо код
       - name: 'Checkout коду'
         uses: actions/checkout@v4
 
@@ -28,7 +28,7 @@ jobs:
 
       # Крок 3: Встановлюємо бібліотеки (FastAPI)
       - name: 'Встановлення FastAPI'
-        run: pip install fastapi
+        run: pip install fastapi uvicorn
 
       # Крок 4: Виводимо версії ПЗ
       - name: 'Виведення версій Python та FastAPI'
@@ -47,18 +47,24 @@ jobs:
       - name: 'Оновлення apt-get'
         run: sudo apt-get update
 
-      # Крок 2: Встановлюємо клієнти для PostgreSQL та MongoDB
-      - name: 'Встановлення клієнтів БД'
-        run: |
-          # Встановлюємо клієнт PostgreSQL
-          sudo apt-get install -y postgresql-client
-          # Встановлюємо новий клієнт MongoDB (mongodb-mongosh)
-          sudo apt-get install -y mongodb-mongosh
+      # Крок 2: Встановлюємо клієнт PostgreSQL
+      - name: 'Встановлення клієнта PostgreSQL'
+        run: sudo apt-get install -y postgresql-client
           
-      # Крок 3: Виводимо версії клієнтів БД
+      # Крок 3: Встановлюємо Python 
+      - name: 'Встановлення Python 3.10'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      # Крок 4: Встановлюємо Python-драйвер для MongoDB
+      - name: 'Встановлення pymongo'
+        run: pip install pymongo
+
+      # Крок 5: Виводимо версії клієнтів БД
       - name: 'Виведення версій клієнтів БД'
         run: |
           echo "--- PostgreSQL Client Version ---"
           psql --version
-          echo "--- MongoDB Client Version ---"
-          mongosh --version
+          echo "--- MongoDB Driver Version (pymongo) ---"
+          pip show pymongo
