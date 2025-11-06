@@ -1,0 +1,46 @@
+name: 'Виведення версій ПЗ'
+
+on:
+  push:
+    branches: [ main ] 
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: # Дозволяє запускати вручну
+
+jobs:
+  # Робота 1: Рівень обробки (BL)
+  processing-level:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Встановлення Python'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' # Використовуємо Python 3.10
+
+      - name: 'Встановлення та перевірка FastAPI'
+        run: |
+          pip install fastapi uvicorn
+          echo "--- Python Version ---"
+          python --version
+          echo "--- FastAPI Version ---"
+          pip show fastapi | grep Version
+          echo "--- Uvicorn Version ---"
+          pip show uvicorn | grep Version
+  
+  # Робота 2: Рівень доступу (AL)
+  access-level:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Встановлення клієнтів БД'
+        run: |
+          sudo apt-get update
+          # Встановлюємо клієнти для PostgreSQL та MongoDB
+          sudo apt-get install -y postgresql-client mongodb-clients
+      
+      - name: 'Перевірка версій клієнтів БД'
+        run: |
+          echo "--- PostgreSQL Client Version ---"
+          psql --version
+          echo "--- MongoDB Client Version ---"
+          # Намагаємося викликати 'mongo' або 'mongosh', оскільки назва може відрізнятися
+          mongo --version || mongosh --version
