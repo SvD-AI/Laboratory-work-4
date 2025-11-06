@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest # Використовуємо ОС Ubuntu
 
     steps:
-      # Крок 1: Отримуємо код (стандартна практика)
+      # Крок 1: Отримуємо код 
       - name: 'Checkout коду'
         uses: actions/checkout@v4
 
@@ -49,12 +49,16 @@ jobs:
 
       # Крок 2: Встановлюємо клієнти для PostgreSQL та MongoDB
       - name: 'Встановлення клієнтів БД'
-        run: sudo apt-get install -y postgresql-client mongodb-clients
-
+        run: |
+          # Встановлюємо клієнт PostgreSQL
+          sudo apt-get install -y postgresql-client
+          # Встановлюємо новий клієнт MongoDB (mongodb-mongosh)
+          sudo apt-get install -y mongodb-mongosh
+          
       # Крок 3: Виводимо версії клієнтів БД
       - name: 'Виведення версій клієнтів БД'
         run: |
           echo "--- PostgreSQL Client Version ---"
           psql --version
           echo "--- MongoDB Client Version ---"
-          mongosh --version || mongo --version
+          mongosh --version
